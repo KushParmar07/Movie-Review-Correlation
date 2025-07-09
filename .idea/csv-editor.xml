@@ -10,31 +10,10 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\review_urls_2.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\review_urls_originals.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\titles.csv">
           <value>
             <Attribute>
               <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\titles_2.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

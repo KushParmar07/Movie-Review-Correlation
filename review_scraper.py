@@ -26,7 +26,8 @@ def get_ratings(movie):
 
 
             page.goto(movie)
-            page.locator("button.ipc-see-more__button:has-text('All')").click()
+            if page.locator("button.ipc-see-more__button:has-text('All')"):
+                page.locator("button.ipc-see-more__button:has-text('All')").click()
             page.wait_for_timeout(60000)
 
             pageHtml = page.content()

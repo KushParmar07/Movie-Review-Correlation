@@ -1,15 +1,16 @@
-import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 
 
+# Function to scrape reviews from IMDB for a given movie ID
 def get_ratings(movie_id: str, show_logs: bool = False):
     reviews = []
     if show_logs:
         print(f"Processing {movie_id}...")
     try:
+        # Setup browser for web scraping
         with sync_playwright() as pw:
             browser = pw.chromium.launch(headless=False)
             context = browser.new_context()
@@ -23,6 +24,7 @@ def get_ratings(movie_id: str, show_logs: bool = False):
             pageHtml = page.content()
             soup = BeautifulSoup(pageHtml, 'html.parser')
 
+            # Extract review text from each review element on the page
         for review in soup.find_all(class_="sc-a77dbebd-1 iJQoqi user-review-item"):
             rating_element = review.find(class_="ipc-html-content-inner-div")
             if rating_element:
@@ -36,27 +38,17 @@ def get_ratings(movie_id: str, show_logs: bool = False):
     
     return reviews
 
+
+# Function to analyze sentiment of movie reviews
 def sentiment_analyzer(reviews: list):
-    analyzer = SentimentIntensityAnalyzer()
-    sentiment_scores = []
-    for rating in reviews:
-        sentiment = analyzer.polarity_scores(rating)
-        sentiment_scores.append(sentiment['compound'])
-    
-    return sum(sentiment_scores) / len(sentiment_scores)
+    try:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = []
+        # Calculate sentiment score for each review and return average
+        for rating in reviews:
+            sentiment = analyzer.polarity_scores(rating)
+            sentiment_scores.append(sentiment['compound'])
 
-
-if __name__ == "__main__":
-    movies = pd.read_excel('Movie_Dataset_Encoded_Test.xlsx')
-    movie_ids = movies['IMDB_ID'].tolist()
-
-    for movie_id in movie_ids:
-        if pd.isna(movies.loc[movies['IMDB_ID'] == movie_id, 'REVIEW_SCORE'].values[0]):
-            print(f"Processing {movie_id}...")
-            reviews = get_ratings(movie_id)
-            if reviews:
-                sentiment = sentiment_analyzer(reviews)
-                movies.loc[movies['IMDB_ID'] == movie_id, 'REVIEW_SCORE'] = sentiment
-
-    movies.to_excel('Movie_Dataset_Encoded_Test.xlsx', index=False)
-
+        return sum(sentiment_scores) / len(sentiment_scores)
+    except:
+        return 0

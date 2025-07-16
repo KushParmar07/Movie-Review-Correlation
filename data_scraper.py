@@ -22,7 +22,8 @@ def get_data(df: pd.DataFrame):
             df.at[index, 'IMDB_ID'] = data['imdbID']
             index += 1
         except Exception as e:
-            print(f"{title}: {e}")
+            with open('errors.txt', 'a') as f:
+                f.write(f"{title}: {e}\n")
 
     return df
 
@@ -37,8 +38,10 @@ def encode_data(df: pd.DataFrame):
 if __name__ == "__main__":
     load_dotenv()
     api_key = os.getenv("API_KEY")
-    df = pd.DataFrame(columns=['TITLES', 'YEAR', 'RATED', 'RUNTIME', 'GENRE', 'RATINGS', 'REVENUE', 'IMDB_ID'])
-    encode_data(get_data(df)).to_excel('Movie_Dataset_Encoded_Test.xlsx', index=False)
+    df = pd.DataFrame(columns=['TITLES', 'YEAR', 'RATED', 'RUNTIME', 'GENRE', 'RATINGS', 'REVENUE', 'IMDB_ID', 'REVIEW_SCORE'])
+    raw_data = get_data(df)
+    raw_data.to_excel('Movie_Dataset_Test.xlsx', index=False)
+    encode_data(raw_data).to_excel('Movie_Dataset_Encoded_Test.xlsx', index=False)
     
         
         
